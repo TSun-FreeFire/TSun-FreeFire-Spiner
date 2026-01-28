@@ -1,0 +1,34 @@
+# Environment variables (contains sensitive data)
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Found items (may contain sensitive account data)
+FOUND_ITEMS/
+rearfound.json
+
+# Account files (sensitive)
+accounts*.json
+accounts*.txt
