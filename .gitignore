@@ -26,9 +26,6 @@ Thumbs.db
 *.log
 
 # Found items (may contain sensitive account data)
-FOUND_ITEMS/
-rearfound.json
+
 
 # Account files (sensitive)
-accounts*.json
-accounts*.txt
