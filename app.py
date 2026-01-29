@@ -17,7 +17,6 @@ License: Free for personal use
 
 import os
 import sys
-import subprocess
 import glob
 import json
 import binascii
@@ -25,43 +24,12 @@ import asyncio
 import urllib3
 from datetime import datetime
 
-def install_requirements():
-    # Note: protobuf version is managed by requirements.txt to avoid conflicts
-    
-    required_libraries = {
-        "aiohttp": "aiohttp",
-        "Crypto": "pycryptodome",
-        "jwt": "PyJWT",
-        "bbpb": "bbpb",
-        "colorama": "colorama",
-        "dotenv": "python-dotenv",
-        "requests": "requests"
-    }
-    
-    missing_libraries = []
-
-    for lib_import, pkg_name in required_libraries.items():
-        try:
-            __import__(lib_import)
-        except ImportError:
-            missing_libraries.append(pkg_name)
-
-    if missing_libraries:
-        print(f"\n[*] Missing libraries: {', '.join(missing_libraries)}")
-        print("[*] Installing requirements, please wait...\n")
-        try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", *missing_libraries])
-            print("\n[+] Success! Restarting script...\n")
-            os.execv(sys.executable, ['python'] + sys.argv)
-        except Exception as e:
-            print(f"[-] Auto-install failed: {e}")
-            sys.exit(1)
-
-install_requirements()
+# Dependencies are managed by requirements.txt
+# Render automatically installs them during the build phase
 
 import aiohttp
 import jwt
-import bbpb
+import blackboxprotobuf
 import requests
 from dotenv import load_dotenv
 from Crypto.Cipher import AES
@@ -270,7 +238,7 @@ def decode_gacha_response(raw_bytes, nickname, uid, pwd, acc_id, rare_map, extra
     found_item_names = []
     
     try:
-        decoded_data, _ = bbpb.decode_message(raw_bytes)
+        decoded_data, _ = blackboxprotobuf.decode_message(raw_bytes)
         
         # Find items in the response
         rares = find_items_in_all_fields(decoded_data, rare_map)
