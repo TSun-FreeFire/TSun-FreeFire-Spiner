@@ -26,7 +26,7 @@ import urllib3
 from datetime import datetime
 
 def install_requirements():
-    PROTOBUF_VERSION = "6.33.4"
+    # Note: protobuf version is managed by requirements.txt to avoid conflicts with blackboxprotobuf
     
     required_libraries = {
         "aiohttp": "aiohttp",
@@ -34,23 +34,13 @@ def install_requirements():
         "jwt": "PyJWT",
         "blackboxprotobuf": "blackboxprotobuf",
         "colorama": "colorama",
-        "google.protobuf": f"protobuf=={PROTOBUF_VERSION}",
         "dotenv": "python-dotenv",
         "requests": "requests"
     }
     
     missing_libraries = []
-    
-    try:
-        import google.protobuf
-        installed_version = google.protobuf.__version__
-        if installed_version != PROTOBUF_VERSION:
-            missing_libraries.append(f"protobuf=={PROTOBUF_VERSION}")
-    except ImportError:
-        missing_libraries.append(f"protobuf=={PROTOBUF_VERSION}")
 
     for lib_import, pkg_name in required_libraries.items():
-        if "protobuf" in pkg_name: continue
         try:
             __import__(lib_import)
         except ImportError:
@@ -58,7 +48,7 @@ def install_requirements():
 
     if missing_libraries:
         print(f"\n[*] Missing libraries: {', '.join(missing_libraries)}")
-        print("[*] Installing requirements for Termux, please wait...\n")
+        print("[*] Installing requirements, please wait...\n")
         try:
             subprocess.check_call([sys.executable, "-m", "pip", "install", *missing_libraries])
             print("\n[+] Success! Restarting script...\n")
@@ -495,14 +485,20 @@ async def auto_mode():
         
         if not files:
             print(Fore.RED + "❌ No account files found!")
-            input("\nPress Enter to exit...")
+            try:
+                input("\nPress Enter to exit...")
+            except EOFError:
+                pass
             return
         
         # Get all payloads
         payloads = load_payloads()
         if not payloads:
             print(Fore.RED + "❌ No payloads found! Please add payloads first.")
-            input("\nPress Enter to exit...")
+            try:
+                input("\nPress Enter to exit...")
+            except EOFError:
+                pass
             return
         
         print(Fore.GREEN + f"📁 Found {len(files)} account file(s)")
@@ -551,13 +547,19 @@ async def auto_mode():
         print(Fore.MAGENTA + Style.BRIGHT + "\n\n" + "=" * 60)
         print(Fore.GREEN + Style.BRIGHT + "🎉 ALL PROCESSING COMPLETE!")
         print(Fore.MAGENTA + Style.BRIGHT + "=" * 60 + "\n")
-        input("Press Enter to exit...")
+        try:
+            input("Press Enter to exit...")
+        except EOFError:
+            pass  # Non-interactive environment (e.g., Render deployment)
         
     except KeyboardInterrupt:
         force_exit_msg()
     except Exception as e:
         print(Fore.RED + f"\n❌ Error: {e}")
-        input("\nPress Enter to exit...")
+        try:
+            input("\nPress Enter to exit...")
+        except EOFError:
+            pass  # Non-interactive environment (e.g., Render deployment)
 
 async def main_menu():
     while True:
