@@ -701,5 +701,25 @@ async def main_menu():
         except KeyboardInterrupt: force_exit_msg()
 
 if __name__ == "__main__":
-    try: asyncio.run(auto_mode())  # Changed from main_menu() to auto_mode()
-    except KeyboardInterrupt: force_exit_msg()
+    # Check if running in deployment (non-interactive) environment
+    import time
+    
+    try:
+        while True:  # Continuous loop for deployment
+            try:
+                asyncio.run(auto_mode())
+            except KeyboardInterrupt:
+                force_exit_msg()
+                break
+            except Exception as e:
+                print(Fore.RED + f"\n❌ Unexpected error: {e}")
+            
+            # Sleep for 1 hour before next run (adjust as needed)
+            from datetime import timedelta
+            next_run = datetime.now() + timedelta(hours=1)
+            print(Fore.CYAN + f"\n⏰ Waiting 1 hour before next run...")
+            print(Fore.YELLOW + f"   Next run at: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
+            time.sleep(3600)  # 3600 seconds = 1 hour
+            
+    except KeyboardInterrupt:
+        force_exit_msg()
