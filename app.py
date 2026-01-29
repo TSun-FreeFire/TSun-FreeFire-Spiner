@@ -26,13 +26,13 @@ import urllib3
 from datetime import datetime
 
 def install_requirements():
-    # Note: protobuf version is managed by requirements.txt to avoid conflicts with blackboxprotobuf
+    # Note: protobuf version is managed by requirements.txt to avoid conflicts
     
     required_libraries = {
         "aiohttp": "aiohttp",
         "Crypto": "pycryptodome",
         "jwt": "PyJWT",
-        "blackboxprotobuf": "blackboxprotobuf",
+        "bbpb": "bbpb",
         "colorama": "colorama",
         "dotenv": "python-dotenv",
         "requests": "requests"
@@ -61,7 +61,7 @@ install_requirements()
 
 import aiohttp
 import jwt
-import blackboxprotobuf
+import bbpb
 import requests
 from dotenv import load_dotenv
 from Crypto.Cipher import AES
@@ -270,7 +270,7 @@ def decode_gacha_response(raw_bytes, nickname, uid, pwd, acc_id, rare_map, extra
     found_item_names = []
     
     try:
-        decoded_data, _ = blackboxprotobuf.decode_message(raw_bytes)
+        decoded_data, _ = bbpb.decode_message(raw_bytes)
         
         # Find items in the response
         rares = find_items_in_all_fields(decoded_data, rare_map)
